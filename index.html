@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMiners Newsroom</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the CTRL proposal house style (single 920px column, gold decision boxes), plus a weekly run-sheet grid for the two editions */
+:root{
+  --bg:#f5f3ee; --bg-2:#ecebe6; --ink:#1a1a1a; --muted:#6b675f; --line:rgba(26,26,26,.14); --panel:rgba(26,26,26,.045);
+  --gold:#d99a00; --gold-ink:#7a5600; --good:#1f9d6a; --bad:#d64545; --idle:#a39f97; --code:rgba(26,26,26,.06);
+  --x:#1a1a1a; --li:#0a66c2;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f0f10; --bg-2:#151517; --ink:#f2efe8; --muted:#9a968e; --line:rgba(255,255,255,.12); --panel:rgba(255,255,255,.045);
+  --gold:#ffb800; --gold-ink:#ffcf4d; --good:#3fcf8e; --bad:#ff5c5c; --idle:#6f6c66; --code:rgba(255,255,255,.07);
+  --x:#f2efe8; --li:#5aa9ff;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0f0f10; --bg-2:#151517; --ink:#f2efe8; --muted:#9a968e; --line:rgba(255,255,255,.12); --panel:rgba(255,255,255,.045);
+  --gold:#ffb800; --gold-ink:#ffcf4d; --good:#3fcf8e; --bad:#ff5c5c; --idle:#6f6c66; --code:rgba(255,255,255,.07);
+  --x:#f2efe8; --li:#5aa9ff;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;margin:0;padding-inline:20px;padding-block:40px 80px}
+.page{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:Montserrat,Inter,system-ui,sans-serif;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(32px,5.4vw,46px);font-weight:800;line-height:1.08}
+h2{font-size:22px;font-weight:700;margin-bottom:12px}
+h3{font-size:15px;font-weight:700}
+p{margin:0 0 12px;max-width:70ch}
+p:last-child{margin-bottom:0}
+a{color:var(--gold-ink)}
+code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.86em;background:var(--code);padding:1px 5px;border-radius:5px}
+.eyebrow{font:600 12px/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink)}
+header{display:flex;flex-direction:column;gap:14px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.lead{font-size:18.5px;line-height:1.55;max-width:64ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:600}
+.small{font-size:13.5px;color:var(--muted)}
+.sec-intro{color:var(--muted);font-size:15px;margin-bottom:16px}
+
+/* the two editions */
+.editions{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ed{border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ed .tag{font:700 11px/1 Montserrat,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.ed.x .tag{color:var(--x)} .ed.li .tag{color:var(--li)}
+.ed h3{font-size:19px}
+.ed p{font-size:15px;margin:0}
+.ed ul{margin:0;padding-left:18px;font-size:14.5px;display:flex;flex-direction:column;gap:5px}
+
+/* findings */
+.find{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fc{background:var(--panel);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.fc .n{font:800 26px/1.05 Montserrat,sans-serif;font-variant-numeric:tabular-nums}
+.fc .l{font-size:13.5px;color:var(--muted);line-height:1.45}
+.fc .s{font-size:12px;color:var(--muted);margin-top:auto;padding-top:6px}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:660px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 13px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:600 11px/1.3 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--panel)}
+td:first-child{font-weight:600;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.us td{background:color-mix(in srgb,var(--gold) 9%,transparent)}
+.dim{color:var(--muted)}
+
+.lessons{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px}
+.lesson h3{margin-bottom:4px}
+.lesson p{font-size:14.5px;margin:0}
+.lesson .who{font-size:12.5px;color:var(--muted);margin-top:4px;display:block}
+
+/* platform-now list */
+.claims{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.claim{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.claim .d{font:600 12px/1.5 Inter,sans-serif;color:var(--gold-ink);font-variant-numeric:tabular-nums}
+.claim .src{font-size:12.5px;color:var(--muted)}
+.plat{font:700 10.5px/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:5px;margin-right:6px;vertical-align:1px;border:1px solid var(--line)}
+.plat.x{color:var(--x)} .plat.li{color:var(--li)}
+
+/* desks */
+.desks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.desk{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.desk h3{font-size:15px}
+.desk p{font-size:14px;margin:0;color:var(--ink)}
+.desk .where{font-size:12px;color:var(--muted);margin-top:auto;padding-top:4px}
+.desk .label{font:600 12px/1.4 ui-monospace,"SF Mono",Menlo,monospace;color:var(--gold-ink)}
+
+/* run sheet */
+.week{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+.week table{min-width:720px}
+.week td{font-size:13.5px}
+.week td:first-child{white-space:nowrap}
+.slot{font:600 11px/1.3 Inter,sans-serif;color:var(--muted);display:block}
+
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px}
+.rules li{font-size:14.5px}
+ul.clean{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px}
+
+.example{border-left:3px solid var(--gold);padding:10px 16px;background:var(--panel);border-radius:0 10px 10px 0;font-size:14.5px}
+.example .k{font:600 11px/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.example + .example{margin-top:10px}
+
+.fix{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fixrow{display:grid;grid-template-columns:120px 1fr 160px;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14.5px;align-items:baseline}
+.fixrow:last-child{border-bottom:0}
+.fixrow .w{font:600 12.5px/1.4 Inter,sans-serif}
+.fixrow .o{font-size:12.5px;color:var(--muted)}
+
+/* build flow */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.st{padding:14px 14px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px;background:var(--panel)}
+.st:last-child{border-right:0}
+.st .n{font:700 11px/1 Montserrat,sans-serif;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.st h3{font-size:14.5px}
+.st p{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
+.st .who{margin-top:auto;font-size:11.5px;font-weight:600;padding-top:8px}
+.st.human{background:transparent}
+.st.human .who{color:var(--gold-ink)}
+.layers{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.layer{display:grid;grid-template-columns:200px 1fr;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.layer:last-child{border-bottom:0}
+.layer h3{font-size:14.5px}
+.layer p{font-size:14.5px;margin:0}
+.layer .when{display:block;font:600 11.5px/1.3 Inter,sans-serif;color:var(--muted);margin-top:4px}
+.layer.new h3{color:var(--gold-ink)}
+
+.pill{display:inline-block;font:600 11px/1.5 Inter,sans-serif;letter-spacing:.04em;padding:1px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.pill.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 11%,transparent)}
+.pill.gap{color:var(--gold-ink);background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.pill.idle{color:var(--muted);background:var(--panel)}
+
+.dec{border:1.5px solid var(--gold);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.dec h3{font-size:16px}
+.dec p{font-size:14.5px;margin:0}
+.opt{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:baseline;font-size:15px}
+.opt b.k{font:700 12px/1 Montserrat,sans-serif;color:var(--gold-ink);border:1px solid var(--gold);border-radius:6px;padding:4px 0;text-align:center}
+.rec{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.rec b{color:var(--ink)}
+.decs{display:flex;flex-direction:column;gap:14px}
+.callout{background:var(--panel);border-radius:14px;padding:16px 20px;font-size:15px}
+
+details{border:1px solid var(--line);border-radius:14px;padding:4px 18px}
+details summary{cursor:pointer;font:600 14px/1 Inter,sans-serif;padding:12px 0}
+details summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+details ol{font-size:13px;color:var(--muted);padding-left:20px;margin:4px 0 14px;display:flex;flex-direction:column;gap:4px}
+details ol a{word-break:break-all}
+
+@media (max-width:760px){
+  .editions,.lessons,.rules,.desks{grid-template-columns:1fr}
+  .find{grid-template-columns:1fr 1fr}
+  .flow{grid-template-columns:1fr}
+  .st{border-right:0;border-bottom:1px solid var(--line)}
+  .st:last-child{border-bottom:0}
+  .claim{grid-template-columns:1fr;gap:2px}
+  .layer{grid-template-columns:1fr;gap:4px}
+  .fixrow{grid-template-columns:1fr;gap:2px}
+}
+@media (max-width:440px){.find{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <span class="eyebrow">New pillar · X + LinkedIn · proposal for Henry</span>
+    <h1>OneMiners Newsroom</h1>
+    <p class="lead">One newsroom, two editions. On <b>X</b> we run the wire: three or four short posts a day where the post itself is the news. On <b>LinkedIn</b> we publish a weekly paper: four Page posts, one newsletter edition, and daily posts from our own people. Both cover the Bitcoin-mining industry, its live debates and its events, alongside our own sites. It replaces most of what we post on both platforms today, so the daily volume doesn't grow.</p>
+    <div class="meta"><span>Written <b>1 Oct 2026</b></span><span>Measured <b>49 X accounts and 40+ LinkedIn Pages and people</b>, ours included</span><span>Platform research <b>official sources first, every claim dated</b></span><span>Builds on <b>the 29 Sep calendar decisions</b></span></div>
+  </header>
+
+  <!-- ===================== THE SHORT VERSION ===================== -->
+  <section>
+    <h2>The two editions</h2>
+    <div class="editions">
+      <div class="ed x">
+        <span class="tag">X · @oneminers · the wire</span>
+        <h3>Fast, short, the post is the news</h3>
+        <p>3 posts every weekday, plus 1 optional. 1 a day at weekends. Plus 15–20 minutes of replies to the big mining accounts.</p>
+        <ul>
+          <li><b>JUST IN:</b> mining headlines with the source in a reply</li>
+          <li>A quote-post desk: our one-line take on a company, analyst or filing</li>
+          <li>A rotating series slot: network week, machine room, our sites, the debate, the weekly Article</li>
+          <li>Event desk at 5–8 posts a day when a conference is on</li>
+        </ul>
+      </div>
+      <div class="ed li">
+        <span class="tag">LinkedIn · the weekly paper</span>
+        <h3>Fewer posts, people in them, one edition a week</h3>
+        <p>4 Page posts a week plus a Friday newsletter. The daily volume comes from named people's own profiles, not the Page.</p>
+        <ul>
+          <li>Network week: a one-stat card</li>
+          <li>From our sites: crew and racking video with named people</li>
+          <li>Story of the week: our angle, ending on a question</li>
+          <li>A document: fleet status, event recap or miner scorecard</li>
+          <li><b>The Mining Brief</b> newsletter, also posted as the X Article</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHERE WE START ===================== -->
+  <section>
+    <h2>Where we start</h2>
+    <p class="sec-intro">Measured 1 Oct 2026 from the public accounts. X covers our last 59 posts and LinkedIn our last 10 public posts (LinkedIn only shows 10 to logged-out readers).</p>
+    <div class="find">
+      <div class="fc"><span class="n">5.7 / day</span><span class="l">posts on X over the last 10 days: 63% video, 10% Articles (6 in 10 days)</span><span class="s">X · 755 followers</span></div>
+      <div class="fc"><span class="n">94</span><span class="l">median views per X post. Per follower (0.125) that's already level with mining-native accounts. What's missing is the audience, not reach.</span><span class="s">Blockspace 0.24 · TheEnergyMag 0.14 · Luxor 0.04</span></div>
+      <div class="fc"><span class="n">0</span><span class="l">comments across our last 10 LinkedIn posts. Median 2.5 reactions, which is 1.1 per 1,000 followers. Every post is a short video ending "share this with a friend", with 3–5 hashtags.</span><span class="s">LinkedIn · 2,268 followers · ~1 post a day</span></div>
+    </div>
+    <p class="small" style="margin-top:14px">Two things to fix first: both profiles quote an electricity rate in the bio or About section, and four recent X news posts carry dollar figures. Details are in <a href="#fix">Fix this week</a> and <a href="#d2">decision 2</a>.</p>
+  </section>
+
+  <!-- ===================== WHO'S WINNING: X ===================== -->
+  <section>
+    <h2>Who is winning on X</h2>
+    <p class="sec-intro">Measured 1 Oct 2026 from each account's last 40–60 posts, with posts under 18 hours old left out. "Views / follower" is the median views divided by followers. It's the fairest way to compare a 4,000-follower desk with a 4-million one.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Account</th><th class="num">Followers</th><th class="num">Own posts / day</th><th class="num">Median views</th><th class="num">Views / follower</th><th>What they do</th></tr></thead>
+      <tbody>
+        <tr><td>@blockspace</td><td class="num">13.8k</td><td class="num">5.3</td><td class="num">3,251</td><td class="num">0.24</td><td>Quote-posts with one line of angle (40%). Its 3 best posts are all quotes.</td></tr>
+        <tr><td>@TheEnergyMag</td><td class="num">4.0k</td><td class="num">11.4</td><td class="num">564</td><td class="num">0.14</td><td>Ex-TheMinerMag. Mining wire, plus "Insider Trade" filings as a series.</td></tr>
+        <tr><td>@mempool</td><td class="num">53.5k</td><td class="num">0.4</td><td class="num">11,899</td><td class="num">0.22</td><td>Screenshots of its own tool. Best post 87k: a live audit.</td></tr>
+        <tr><td>@CleanSpark_Inc</td><td class="num">36.1k</td><td class="num">0.1</td><td class="num">18,072</td><td class="num">0.50</td><td>Rare posts, each one a real event.</td></tr>
+        <tr><td>@MARA · @Hut8Corp</td><td class="num">82.5k · 53.1k</td><td class="num">0.2</td><td class="num">15,851 · 10,600</td><td class="num">0.19 · 0.20</td><td>Company news only. Their CEOs out-reach them per follower (MARA's CEO: 0.66).</td></tr>
+        <tr><td>@simpleminingio</td><td class="num">25.5k</td><td class="num">4.8</td><td class="num">1,072</td><td class="num">0.04</td><td>Hosting competitor. High volume, low reach.</td></tr>
+        <tr><td>@compass_mining</td><td class="num">41.8k</td><td class="num">0.9</td><td class="num">1,229</td><td class="num">0.03</td><td>Hosting competitor. Monday post: "uptime across all sites was 93.4% last week", with a photo.</td></tr>
+        <tr><td>@hashrateindex</td><td class="num">16.0k</td><td class="num">0.5</td><td class="num">606</td><td class="num">0.04</td><td>Mostly links (37%). Its weekly "hashrate weather" video runs 2–3× its median, and an event-floor phone photo hit 8.7×.</td></tr>
+        <tr><td>@BITMAINtech</td><td class="num">112k</td><td class="num">1.3</td><td class="num">4,021</td><td class="num">0.04</td><td>Promo cards. This is the "Bitmain" model from the calendar, and it underperforms.</td></tr>
+        <tr><td>@WatcherGuru</td><td class="num">4.88M</td><td class="num">12.7</td><td class="num">403,477</td><td class="num">0.08</td><td>"JUST IN:" on 57 of 61 posts. 65% are plain text. Best post (5.35M) was text only.</td></tr>
+        <tr><td>@BitcoinMagazine</td><td class="num">4.50M</td><td class="num">12.8</td><td class="num">99,208</td><td class="num">0.02</td><td>"JUST IN:" plus its own dark charts, no logo.</td></tr>
+        <tr><td>@CoinDesk · @Cointelegraph</td><td class="num">4.1M · 2.9M</td><td class="num">22 · 67</td><td class="num">~56k</td><td class="num">0.01–0.02</td><td>Firehose volume. The best CoinDesk posts were desk interview clips filmed at a conference.</td></tr>
+        <tr class="us"><td>@oneminers</td><td class="num">755</td><td class="num">5.7</td><td class="num">94</td><td class="num">0.125</td><td>Evergreen video, explainers, Articles. News started 1 Oct.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small" style="margin-top:10px">Company view counts can include paid promotion. Riot's best post had 726k views and 225 likes. IREN (0.4 posts a day, 1.58 views per follower) is probably promoted too, so it isn't in the table. The full set of 49 accounts is in the research folder.</p>
+  </section>
+
+  <!-- ===================== WHO'S WINNING: LINKEDIN ===================== -->
+  <section>
+    <h2>Who is winning on LinkedIn</h2>
+    <p class="sec-intro">Measured 1 Oct 2026 from each Page's latest public posts. "Per 1k" is the median reactions plus comments per 1,000 followers. Posts the Page reshared from people are counted separately.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Page</th><th class="num">Followers</th><th class="num">Posts / 30 d</th><th class="num">Median</th><th class="num">Per 1k</th><th>What they do</th></tr></thead>
+      <tbody>
+        <tr><td>Cipher Digital</td><td class="num">8,299</td><td class="num">~4</td><td class="num">235</td><td class="num">28.3</td><td>Few posts, each one a real company event</td></tr>
+        <tr><td>Abundant Mines</td><td class="num">1,749</td><td class="num">~11</td><td class="num">16</td><td class="num">9.2</td><td>Hosting. Crew videos: "Three days. 400+ machines."</td></tr>
+        <tr><td>IREN</td><td class="num">41,872</td><td class="num">~18</td><td class="num">230</td><td class="num">5.5</td><td>Executives on stage, conference coverage</td></tr>
+        <tr><td>River</td><td class="num">14,054</td><td class="num">~18</td><td class="num">68</td><td class="num">4.8</td><td>One-stat images plus a biweekly newsletter. This is the "digital newspaper" that works.</td></tr>
+        <tr><td>CleanSpark</td><td class="num">12,524</td><td class="num">~7</td><td class="num">61</td><td class="num">4.8</td><td>Images, plus 4 reshared posts from people</td></tr>
+        <tr><td>TheEnergyMag</td><td class="num">1,859</td><td class="num">~12</td><td class="num">7.5</td><td class="num">4.0</td><td>A small wire, about one news post every 2–3 days</td></tr>
+        <tr><td>Hut 8</td><td class="num">48,401</td><td class="num">~5</td><td class="num">158</td><td class="num">3.3</td><td>News cards. Best: a 1 GW lease (747)</td></tr>
+        <tr><td>Braiins (Prague)</td><td class="num">5,727</td><td class="num">~14</td><td class="num">14.5</td><td class="num">2.5</td><td>Its CMO's personal coffee-lab video got 96, against the Page's median of 14.5</td></tr>
+        <tr><td>Luxor</td><td class="num">7,926</td><td class="num">~35</td><td class="num">6.5</td><td class="num">0.8</td><td>Weekly "Hashrate Weather Report" video gets 2–5 reactions</td></tr>
+        <tr><td>Bitcoin Magazine</td><td class="num">110,388</td><td class="num">~255</td><td class="num">15</td><td class="num">0.14</td><td>8.5 "JUST IN" a day. X-style volume fails on LinkedIn.</td></tr>
+        <tr><td>CoinDesk</td><td class="num">177,688</td><td class="num">~270</td><td class="num">1</td><td class="num">0.01</td><td>9 videos a day, near zero engagement</td></tr>
+        <tr class="us"><td>OneMiners</td><td class="num">2,268</td><td class="num">~32</td><td class="num">2.5</td><td class="num">1.1</td><td>Daily short video, 0 comments</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small" style="margin-top:10px">Posts by people that the Page reshared averaged <b>2.8× the Page's own median</b> (42 posts), and were often each Page's best item of the month. Luxor's CEO got 116 against a Page median of 6.5. No LinkedIn-native Bitcoin-mining newsletter exists yet. Mining newsletters all live on Substack or email.</p>
+  </section>
+
+  <!-- ===================== LESSONS ===================== -->
+  <section>
+    <h2>What the winners do that we don't</h2>
+    <div class="lessons">
+      <div class="lesson"><h3>The post is the news</h3><p>Headline and key figure sit in the post itself. Accounts that mostly post links are at the bottom of both tables. On X, link posts got 0.57× each account's median views.</p><span class="who">Watcher Guru, Bitcoin Magazine · bottom: Hashrate Index, Luxor, Blockworks</span></div>
+      <div class="lesson"><h3>Quote the source, add one line</h3><p>Quote-posts ran at 1.28× median views. X now sends the impressions to the original uploader when a clip is re-posted with a watermark (16 Jul), so quote the original rather than re-upload it.</p><span class="who">Blockspace</span></div>
+      <div class="lesson"><h3>A fixed label readers know</h3><p>"JUST IN:" opens 114 of 2,100 measured posts. "BREAKING" opens 3, and X said in April it would penalise habitual "🚨BREAKING". Keeping our ban on BREAKING costs nothing.</p><span class="who">Watcher Guru, The Block ("THE BLOCK:")</span></div>
+      <div class="lesson"><h3>Our own data, our own chart</h3><p>A screenshot of a tool or a plain dark chart beats a branded promo card. Bitmain's promo cards reach 0.04 views per follower.</p><span class="who">mempool, Bitcoin Magazine, River</span></div>
+      <div class="lesson"><h3>Speed on the conference floor</h3><p>A phone photo with the spec, minutes after a launch, outran Hashrate Index's whole feed. CoinDesk's best posts were short interview clips filmed at the event.</p><span class="who">Hashrate Index at Bitmain's summit, CoinDesk at Korea Blockchain Week</span></div>
+      <div class="lesson"><h3>On LinkedIn, people beat the Page</h3><p>Pages with a moderate cadence that put named people on camera win. High-volume news Pages get 0.01–0.14 per 1k followers.</p><span class="who">IREN, Abundant Mines, Cipher, River</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== PLATFORM NOW ===================== -->
+  <section>
+    <h2>What changed on the platforms this year</h2>
+    <p class="sec-intro">Checked 1 Oct 2026. Each claim carries its publish date, and the sources are listed at the bottom.</p>
+    <div class="claims">
+      <div class="claim"><span class="d">20 Jan · 1 Oct</span><span><span class="plat x">X</span>For You is ranked by a Grok-based model. It rewards replies, quotes, DM shares and copied links (a copied link is worth about 40 likes). Mutes and reports are heavy negatives. Several posts in a row from one account are discounted, and posts older than 48 hours drop out. <span class="src">xai-org/x-algorithm, synced from production almost daily since Aug</span></span></div>
+      <div class="claim"><span class="d">13 Jul 2026</span><span><span class="plat x">X</span>Mutual follows are boosted in the feed and in replies. That makes a daily reply session with the big mining accounts a direct way to grow.</span></div>
+      <div class="claim"><span class="d">28 Jul 2026</span><span><span class="plat x">X</span>X says there's no link penalty any more. Links still underperform: Buffer measured 2.25% median engagement on link posts against 3.56% for text (5 Mar 2026). Keep the source in a reply.</span></div>
+      <div class="claim"><span class="d">11 Apr · 16 Jul</span><span><span class="plat x">X</span>Originality crackdown. Aggregator payouts were cut, duplicate-clip detection got 3× stronger, and asking for engagement over and over can remove an account from the creator programme. Original Content Rewards opened for applications on 8 Sep.</span></div>
+      <div class="claim"><span class="d">12 Jan 2026</span><span><span class="plat x">X</span>Articles are open to every Premium tier. They show as a feed card with no reach boost, and ran at about 1.0× median in our sample. One a week is enough. We're at six in 10 days.</span></div>
+      <div class="claim"><span class="d">23 Apr · 1 Jul</span><span><span class="plat x">X</span>Communities shut down in May. Live Studio for desktop streaming launched for Premium on 1 Jul. Custom Timelines (21 Apr) let people pin a topic, so posts that are clearly about mining get filed under mining.</span></div>
+      <div class="claim"><span class="d">12 Mar 2026</span><span><span class="plat li">LinkedIn</span>One LLM now picks feed candidates by meaning, and a sequence model ranks them on each member's last 1,000+ interactions. Staying on one topic is what builds reach. Interest-based distribution has risen from 5% to 50% of the feed (van der Blom, 7 May).</span></div>
+      <div class="claim"><span class="d">21 May 2026</span><span><span class="plat li">LinkedIn</span>Generic AI-written posts and automated comments are pushed out of recommendations. Vessel drafts for people's profiles must carry their own first-hand detail, or they'll be buried.</span></div>
+      <div class="claim"><span class="d">25 May · 2 Sep</span><span><span class="plat li">LinkedIn</span>Cadence: LinkedIn itself says 2–5 posts a week, two of them video. AuthoredUp finds engagement peaks at 4–5 a week, and van der Blom finds daily posting cuts reach per post by 26%. We post daily.</span></div>
+      <div class="claim"><span class="d">16 Mar · 2 Sep</span><span><span class="plat li">LinkedIn</span>Documents (PDF carousels) lead on reach and engagement: 1.39× reach on 3M posts. Video views are down 36% year on year, and clips under 30 s are the weakest. Polls get 1.78× reach but only 0.37× engagement.</span></div>
+      <div class="claim"><span class="d">~Mar · 27 Aug</span><span><span class="plat li">LinkedIn</span>A Page newsletter notifies each subscriber once, on one channel, and only about 59% got the email in one measured case. There's no one-a-day cap; we were wrong about that on 29 Sep. A Page needs 150+ followers, and we have 2,268.</span></div>
+      <div class="claim"><span class="d">22 Jun · 23 Jul</span><span><span class="plat li">LinkedIn</span>A live stream must now be attached to a scheduled LinkedIn Event and needs a third-party streaming tool. Collaborative posts (a Page plus up to 5 co-authors) are rolling out. A body link costs about 19% reach, and 0–3 hashtags beat 3–5 (van der Blom, 7 May).</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== THE DESKS ===================== -->
+  <section>
+    <h2>The newsroom's desks</h2>
+    <p class="sec-intro">The same desks feed both editions. Every draft in CTRL is tagged with its desk, so we can see which desks earn their slot.</p>
+    <div class="desks">
+      <div class="desk"><span class="label">JUST IN:</span><h3>Wire</h3><p>Mining, hardware, energy and policy news, with the figure in the post and the source in a reply. No price or ETF chasing: mining-native accounts win on mining news.</p><span class="where">X 2 a day · LinkedIn once a week as story of the week</span></div>
+      <div class="desk"><span class="label">Quote desk</span><h3>Our take</h3><p>One line on a company announcement, an analyst's chart or a filing. Credit is built in, because the original sits under our line.</p><span class="where">X 1 a weekday</span></div>
+      <div class="desk"><span class="label">Network week</span><h3>Data</h3><p>Difficulty, hashrate, hashprice change and fee share, from the radar's two-source ticks. It replaces the daily 07:00 card. Also posted on every difficulty adjustment (next: 3 Oct).</p><span class="where">X Monday + each adjustment · LinkedIn Monday one-stat card</span></div>
+      <div class="desk"><span class="label">The debate</span><h3>Hot discussions</h3><p>The week's live argument (AI pivot, fee market, pool concentration…) in plain words, with our position, ending on a real question.</p><span class="where">X Thursday · LinkedIn story of the week</span></div>
+      <div class="desk"><span class="label">Machine room</span><h3>Hardware</h3><p>New ASIC launches and specs: J/TH, TH/s, cooling. Never a price. Uses the radar's new-ASIC signal, which needs two sources within 48 hours.</p><span class="where">X Tuesday + launches · LinkedIn in the document</span></div>
+      <div class="desk"><span class="label">From our sites</span><h3>Our own news</h3><p>Crew and racking days, the Prague lab, the Houston open day and office news videos, with named people on camera. On LinkedIn these become collaborative posts with the person.</p><span class="where">X Wednesday · LinkedIn Tuesday</span></div>
+      <div class="desk"><span class="label">Event desk</span><h3>Conferences</h3><p>Before, during and after each event, ours and the industry's. Raises X to 5–8 posts a day while it runs. Playbook below.</p><span class="where">Both, as events come</span></div>
+      <div class="desk"><span class="label">On this day</span><h3>Archive</h3><p>A mining moment from this date: the first GPU pool, a famous difficulty jump, a halving. Written in batches, scheduled for the quiet weekend slots.</p><span class="where">X weekends</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== X EDITION ===================== -->
+  <section>
+    <h2>X: the wire</h2>
+    <p class="sec-intro">Times are Prague time. Clocks change on 25 Oct, and the slots stay at the same Prague times. The 15:00–18:00 block is the US morning. One person (Gerda) can run this in about 45 minutes a day: 3–4 posts plus 15–20 minutes of replies. X's own composer schedules the morning and weekend posts.</p>
+    <div class="week"><table>
+      <thead><tr><th>Day</th><th>09:30 · series slot</th><th>15:00 · wire</th><th>16:30 · quote desk</th><th>18:00 · optional</th></tr></thead>
+      <tbody>
+        <tr><td>Mon</td><td>Network week (data card)</td><td>JUST IN</td><td>Quote</td><td>Second JUST IN, or 1 video</td></tr>
+        <tr><td>Tue</td><td>Machine room (spec card or pool-share screenshot)</td><td>JUST IN</td><td>Quote</td><td>Second JUST IN, or 1 video</td></tr>
+        <tr><td>Wed</td><td>From our sites (photo or office video)</td><td>JUST IN</td><td>Quote</td><td>Second JUST IN, or 1 video</td></tr>
+        <tr><td>Thu</td><td>The debate (post ending on a question)</td><td>JUST IN</td><td>Quote</td><td>Second JUST IN, or 1 video</td></tr>
+        <tr><td>Fri</td><td>The Mining Brief as an X Article</td><td>JUST IN</td><td>Quote</td><td>Second JUST IN, or 1 video</td></tr>
+        <tr><td>Sat · Sun</td><td>On this day (scheduled)</td><td class="dim">—</td><td class="dim">—</td><td class="dim">—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small" style="margin-top:10px">That's about 17–22 posts a week, against about 40 now. Evergreen video drops to at most 1 a day and only fills the optional slot. On difficulty-adjustment days, the data post takes the next free slot.</p>
+
+    <h3 style="margin:22px 0 10px">What a wire post looks like</h3>
+    <div class="example"><span class="k">Today's Poolin post, rewritten for the wire</span>JUST IN: Hut 8 leads the auction for Poolin's bankrupt Texas sites, back in court on 2 Oct. Part of its bid only pays out if the sites end up hosting AI, not Bitcoin mining.<br><span class="small">Reply: Source: The Block, 23 Sep · The Energy Mag, 30 Sep</span></div>
+    <div class="example"><span class="k">Data desk, difficulty day</span>Bitcoin difficulty adjusts today, about −0.7%. Hashrate holds near 950 EH/s, and fees are still under 1% of what miners earn per block.</div>
+    <div class="example"><span class="k">The debate</span>Fees are about 0.7% of miner revenue, a 10-year low. In 2028 the block subsidy halves again. Who pays for Bitcoin's security after that: fees, a bigger block, or nobody?</div>
+
+    <h3 style="margin:22px 0 10px">House rules for the wire</h3>
+    <ul class="clean rules">
+      <li>Open with <b>JUST IN:</b>. "BREAKING" stays banned, at no cost.</li>
+      <li>Source goes in the first reply. No link in the main post.</li>
+      <li>0–1 hashtags. Cashtags for listed miners (for example $MARA) depend on <a href="#d2">decision 2</a>.</li>
+      <li>One idea per post. If it needs a thread, it's an Article.</li>
+      <li>Never ask for reposts or follows. X now penalises it.</li>
+      <li>Daily reply session: 15–20 minutes on Blockspace, Hashrate Index, mempool, the public miners and their CEOs.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== LINKEDIN EDITION ===================== -->
+  <section>
+    <h2>LinkedIn: the weekly paper</h2>
+    <p class="sec-intro">This is the 29 Sep decision (Page 4 a week, a weekly newsletter, daily posts from people), now with a fixed run sheet. It replaces today's daily short video.</p>
+    <div class="week"><table>
+      <thead><tr><th>Day</th><th>Company Page</th><th>People's profiles (2 a day in total)</th></tr></thead>
+      <tbody>
+        <tr><td>Mon</td><td><b>Network week</b>: one-stat card in River's format, one number and one line on why it matters</td><td>Technician or ops: what the numbers meant on our floor</td></tr>
+        <tr><td>Tue</td><td><b>From our sites</b>: crew or racking video at a named site, posted as a collaborative post with the person in it</td><td>The person in the video reshares with their own note</td></tr>
+        <tr><td>Wed</td><td><b>Story of the week</b>: text first, our angle, ends on a question, source in the first comment</td><td>A leader's view on the same story</td></tr>
+        <tr><td>Thu</td><td><b>Document</b>, rotating: monthly fleet status · event recap · quarterly public-miner scorecard (EH/s, J/TH, MW, share moving to AI) · hot-topic explainer</td><td>Lab notes from Prague: what we tested this week</td></tr>
+        <tr><td>Fri</td><td><b>The Mining Brief</b> newsletter: top 5 stories, the network week, one note from our sites. It replaces the Page post.</td><td>Free slot: events, hiring, a customer visit</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout" style="margin-top:14px"><b>The people part decides whether this works.</b> Posts by people get about 2.8× the Page's reach, but since May LinkedIn buries generic AI-written posts. The vessel drafts a starting point, and each person adds one thing only they saw before posting. CTRL will ask for that detail before the draft can be marked ready. Who posts is <a href="#d5">decision 5</a>.</div>
+    <h3 style="margin:22px 0 10px">House rules for LinkedIn</h3>
+    <ul class="clean rules">
+      <li>No links in the post body. The source goes in the first comment.</li>
+      <li>0–3 specific hashtags. Drop the generic 3–5.</li>
+      <li>No "share this with a friend" or other engagement-bait endings.</li>
+      <li>Named people and named sites in every video.</li>
+      <li>Video is for sites and crews. Short clips (under 30 s) are the weakest format.</li>
+      <li>Our own events (the Houston open day) get a LinkedIn Event page, which a live stream now requires.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== EVENTS ===================== -->
+  <section>
+    <h2>Event coverage</h2>
+    <p class="sec-intro">The same playbook for industry events and our own, whether we attend or cover remotely.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>When</th><th>X</th><th>LinkedIn</th><th>CTRL</th></tr></thead>
+      <tbody>
+        <tr><td>7 days before</td><td>"What to watch at …": the 3 things likely to be announced</td><td>Who from OneMiners is going (a person's post)</td><td>The event shows in Moments and opens its prep window</td></tr>
+        <tr><td>On the day</td><td>5–8 posts: floor photo plus spec within minutes, "Name at Event: 'quote'" cards, 30–60 s interview clips. Remote: quote the official stream's key moments.</td><td>1 Page post a day with our people in shot, plus posts from people on the floor</td><td>Desk switches to event mode: more slots, and a quick-post card for the phone</td></tr>
+        <tr><td>1–3 days after</td><td>Recap Article: the 5 things that mattered</td><td>Recap document; it leads that week's Mining Brief</td><td>The edition builder pulls in the event's posts</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin:24px 0 10px">The next eight months</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Date</th><th>Moment</th><th>Where</th><th>Why it matters to us</th></tr></thead>
+      <tbody>
+        <tr><td>3 Oct</td><td>Difficulty adjustment (about −0.7%)</td><td>Network</td><td>Data desk, then roughly every 2 weeks</td></tr>
+        <tr><td>Oct</td><td>Ethiopia reassesses miners' power allocation; miners have been on 23% since 15 Sep</td><td>Ethiopia</td><td><b>Our site.</b> See <a href="#d3">decision 3</a></td></tr>
+        <tr><td>10 Oct</td><td>Bitcoin Core v32 (target date)</td><td>Network</td><td>The debate: the Core vs Knots aftermath</td></tr>
+        <tr><td>23–24 Oct</td><td>Plan ₿ Forum</td><td>Lugano</td><td>Europe. Remote coverage</td></tr>
+        <tr><td>~3–25 Nov</td><td>Q3 earnings: MARA, Riot, Hut 8, Core, IREN, Bitdeer, CleanSpark… (dates not yet confirmed)</td><td>US</td><td>Earnings desk: EH/s, J/TH, MW, share moving to AI. No dollars.</td></tr>
+        <tr><td>5–6 Nov</td><td>Bitcoin Amsterdam</td><td>Halfweg, NL</td><td>Closest big event. Attend?</td></tr>
+        <tr><td>18–19 Nov</td><td>North American Blockchain Summit</td><td>Arlington, TX</td><td>Texas grid and energy. Near Houston</td></tr>
+        <tr><td>30 Nov–1 Dec*</td><td>Blockchain Life, with a mining expo</td><td>Dubai</td><td>Our region</td></tr>
+        <tr><td>Dec</td><td>IREN's target date to leave Bitcoin mining</td><td>—</td><td>The AI-pivot story's milestone</td></tr>
+        <tr><td>22–24 Mar 2027*</td><td>Mining Disrupt (moved to Dallas)</td><td>Irving, TX</td><td><b>The biggest mining expo.</b> Flagship event desk</td></tr>
+        <tr><td>6–8 May 2027</td><td>BTC Prague</td><td>Prague</td><td><b>Our home city</b></td></tr>
+        <tr><td>Monthly</td><td>Houston open day (first Monday)</td><td>Houston</td><td>Our own event</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small" style="margin-top:10px">* Dates still conflict between sources. Blockchain Life is also listed as 1–2 Dec, and Mining Disrupt's X bio still shows 11–13 May. The full list (25 events to Dec 2027) is in the research folder.</p>
+  </section>
+
+  <!-- ===================== HOT TOPICS ===================== -->
+  <section>
+    <h2>The debates live right now</h2>
+    <p class="sec-intro">Material for the debate desk, checked as current for July–October 2026. Three of them run through countries where we have sites.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Debate</th><th>Where the argument is</th></tr></thead>
+      <tbody>
+        <tr><td>AI pivot</td><td>Over 4 GW of AI capacity is contracted but only about 550 MW is billing. At least 35 EH/s is leaving listed miners. Is it a rescue or a trap? (CoinShares, 15 Sep)</td></tr>
+        <tr><td>Miner margins</td><td>Hashprice hit a record low in June. Listed miners as a group are below cash breakeven. We can only tell this story in percentages.</td></tr>
+        <tr><td>Fee market</td><td>Fees are about 0.7% of miner revenue, a 10-year low. Who pays for security after 2028?</td></tr>
+        <tr><td>Core vs Knots</td><td>The BIP-110 fork failed on 8 Aug, with 99.85% of hashrate staying put. Its splinter chain dropped SHA-256. v32 is next.</td></tr>
+        <tr><td>Pool concentration</td><td>Three one-block reorgs since 16 Aug. Foundry and AntPool hold about 45% of hashrate. Stratum V2 is joined but barely used.</td></tr>
+        <tr><td>ASICs and tariffs</td><td>US duties on machines run to about 47% while demand collapses (Canaan revenue −68%). Sub-10 J/TH machines are scaling.</td></tr>
+        <tr><td>Texas grid</td><td>The governor's 3 Aug audit froze new loads of 75 MW and up. Miners argue they're the flexible load, not AI.</td></tr>
+        <tr><td><b>Ethiopia</b></td><td>Drought: miners cut to 23% of contracted power from 15 Sep. They're the state utility's biggest payer, and the first rationed.</td></tr>
+        <tr><td><b>Norway</b></td><td>Hydro reservoirs are at record lows (−18 points against the median), which points to a high-price winter.</td></tr>
+        <tr><td><b>Paraguay</b></td><td>Licensed miners fell from 71 to 41. All mining contracts expire 31 Dec 2027, and the hydro power is going to AI.</td></tr>
+        <tr><td>Consolidation</td><td>Poolin's Chapter 11 means its Texas sites get repriced as AI land.</td></tr>
+        <tr><td>Home mining</td><td>A small solo miner found a block on 9 Jul, while hosts leave mining for AI.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== FIX THIS WEEK ===================== -->
+  <section id="fix">
+    <h2>Fix this week</h2>
+    <p class="sec-intro">These need no build. Each is a few minutes in the app.</p>
+    <div class="fix">
+      <div class="fixrow"><span class="w">X bio</span><span>It quotes an electricity rate in dollars. Replace the rate with what we are, e.g. "Bitcoin mining news and hosting. Sites in 8 countries."</span><span class="o">Breaks the money rule</span></div>
+      <div class="fixrow"><span class="w">LinkedIn About</span><span>It quotes a ¢/kWh rate, gives two founding years (2016 in the details, 2017 in the text), is set to "Public Company", and leaves Georgia out of the sites.</span><span class="o">Money rule and accuracy</span></div>
+      <div class="fixrow"><span class="w">X news posts</span><span>Posts on 28 Sep (2), 30 Sep and 1 Oct carry dollar figures, an Article title spells one out, and a 1 Oct post says "profit chart". Stop now; whether to delete them is your call.</span><span class="o">Until <a href="#d2">decision 2</a></span></div>
+      <div class="fixrow"><span class="w">X 1 Oct post</span><span>It went out with a doubled label: "NEWS: News update:".</span><span class="o">Use JUST IN: only</span></div>
+      <div class="fixrow"><span class="w">LinkedIn posts</span><span>Stop the "share this with a friend" endings and the 3–5 generic hashtags, starting with the next post.</span><span class="o">Reach</span></div>
+      <div class="fixrow"><span class="w">X account</span><span>Check x.com/i/under_the_hood once. It now shows whether an account or a post is restricted.</span><span class="o">1 minute</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== CTRL BUILD ===================== -->
+  <section>
+    <h2>How it goes into CTRL</h2>
+    <p class="sec-intro">Most of the pipe already exists: the radar, the Desk, the calendar lanes, Moments, the posting log and the vessel's 06:30 desk writer. The work is giving them the newsroom's shape. Everything that writes runs on the vessel's desktop app, so no API credits.</p>
+    <div class="flow">
+      <div class="st"><span class="n">1 · Radar</span><h3>Finds the story</h3><p>News feeds plus network ticks. A story counts when two sources agree.</p><span class="who">Worker, every 30 min</span></div>
+      <div class="st"><span class="n">2 · Wire queue</span><h3>Drafts it</h3><p>JUST IN line, source reply and LinkedIn angle, checked against the register.</p><span class="who">Vessel, hourly 08–20</span></div>
+      <div class="st human"><span class="n">3 · Desk</span><h3>Picks and posts</h3><p>Approve, post by hand, paste the link back.</p><span class="who">Gerda</span></div>
+      <div class="st"><span class="n">4 · Log</span><h3>Scores it</h3><p>Each post's desk is matched, giving median views per desk against the account median.</p><span class="who">Worker, daily sweep</span></div>
+      <div class="st human"><span class="n">5 · Edition</span><h3>Friday paper</h3><p>Vessel assembles the week; you approve the newsletter and Article.</p><span class="who">Henry</span></div>
+    </div>
+
+    <h3 style="margin:24px 0 10px">The build, in order</h3>
+    <div class="layers">
+      <div class="layer new"><div><h3>1 · Desks on every draft</h3><span class="when">Day 1</span></div><p>A <code>series</code> field on drafts (wire, quote, data, debate, machine, sites, event, archive, edition). The Desk groups by it, the Calendar counts it per day, and the posting log inherits it from the posted link, so the Month page shows which desks earn their slot.</p></div>
+      <div class="layer new"><div><h3>2 · Wire tab on the Desk</h3><span class="when">Days 1–3</span></div><p>Candidate stories from the radar, each pre-drafted by the vessel's hourly job with a JUST IN line, the source reply and a LinkedIn angle. New mining-native sources: The Energy Mag, Blockspace, the Hashrate Index weekly roundup, listed miners' production updates, and SEC filings for the listed miners. The Google News and CFTC feeds still refuse the Worker, so they move to the vessel.</p></div>
+      <div class="layer new"><div><h3>3 · New card templates</h3><span class="when">Days 2–4</span></div><p>Added to the Worker's renderer (still no AI and no image credits): one-stat card, quote card, spec card (no price field), fleet card. LinkedIn documents are assembled as a PDF from slide cards, which closes the "LinkedIn PDF assembly is manual" gap.</p></div>
+      <div class="layer new"><div><h3>4 · Data card goes weekly</h3><span class="when">Day 1</span></div><p>The 07:00 daily card moves to Monday, plus one on each difficulty adjustment. No measured account runs a daily data card. Hashrate Index's weekly one beats its median 2–3×.</p></div>
+      <div class="layer new"><div><h3>5 · Industry events in Moments</h3><span class="when">Days 3–5</span></div><p>Moments only holds holidays today. It gains the conferences, earnings windows, difficulty adjustments and Core releases, each with a lead time. On event days the Desk switches to event mode: 5–8 X slots and a quick-post card for whoever is on the floor.</p></div>
+      <div class="layer new"><div><h3>6 · Edition builder</h3><span class="when">Week 2</span></div><p>Thursday: the vessel assembles The Mining Brief from what actually went out that week, plus the network week and one note from our sites. That gives a newsletter draft and an X Article draft. You approve on Friday morning.</p></div>
+      <div class="layer new"><div><h3>7 · People desk</h3><span class="when">Week 2</span></div><p>Drafts addressed to named people, each with a required "what only you saw" field before the draft counts as ready. Each person's queue appears in their own view.</p></div>
+      <div class="layer new"><div><h3>8 · Register update</h3><span class="when">Day 1</span></div><p>Whatever you choose in decision 2, plus engagement-bait phrases ("share this with a friend", "repost to win"), hashtag caps (X 1, LinkedIn 3), and a warning for a link in the main post.</p></div>
+      <div class="layer"><div><h3>9 · LinkedIn numbers</h3><span class="when">Weekly</span></div><p>LinkedIn has no API for us and its terms forbid scraping. Gerda uploads the Page analytics export once a week (about 2 minutes), and CTRL reads it. X numbers already flow in.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== MEASURE ===================== -->
+  <section>
+    <h2>How we'll know it's working</h2>
+    <p class="sec-intro">Targets are proposals, to be reset at the week-4 review once each desk has a month of data.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Measure</th><th class="num">Now</th><th class="num">Week 4</th><th class="num">Week 12</th><th>Why this measure</th></tr></thead>
+      <tbody>
+        <tr><td>X followers</td><td class="num">755</td><td class="num">900</td><td class="num">1,500</td><td>Per-follower reach is already fine. Audience size is the gap.</td></tr>
+        <tr><td>X median views / post</td><td class="num">94</td><td class="num">150</td><td class="num">300</td><td>Mutual follows from the reply sessions should lift it</td></tr>
+        <tr><td>X posts over 2,000 views</td><td class="num">0 a week</td><td class="num">1 a week</td><td class="num">3 a week</td><td>Proof a desk can break out</td></tr>
+        <tr><td>LinkedIn per 1k followers</td><td class="num">1.1</td><td class="num">2.5</td><td class="num">4.5</td><td>River and TheEnergyMag sit at 4–5</td></tr>
+        <tr><td>LinkedIn posts with comments</td><td class="num">0 of 10</td><td class="num">half</td><td class="num">most</td><td>A question on every post is the cheapest signal</td></tr>
+        <tr><td>Newsletter subscribers</td><td class="num">—</td><td class="num">baseline</td><td class="num">set at week 4</td><td>Each edition notifies subscribers directly</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small" style="margin-top:10px">At week 4 the two weakest desks lose their slot to the strongest. Every desk is measured against the account's own median, not a guess.</p>
+  </section>
+
+  <!-- ===================== DECISIONS ===================== -->
+  <section>
+    <h2>What I need from you</h2>
+    <p class="sec-intro">Seven calls. A letter for each, or "as recommended". Nothing gets built or changed before you answer.</p>
+    <div class="decs">
+      <div class="dec" id="d1"><h3>1 · The weekly edition's name</h3>
+        <p>The newsletter name readers subscribe to, used on LinkedIn and as the Friday X Article.</p>
+        <div class="opt"><b class="k">A</b><span><b>The Mining Brief</b></span></div>
+        <div class="opt"><b class="k">B</b><span><b>OneMiners Mining Desk</b></span></div>
+        <div class="opt"><b class="k">C</b><span>Your own name</span></div>
+        <div class="rec">Recommended: <b>A</b>. It says what it is, and none of the mining newsletters we found uses it.</div>
+      </div>
+      <div class="dec" id="d2"><h3>2 · Dollar figures in news</h3>
+        <p>The rule today: no currency figure in any text lane. Industry news is full of deal sizes and ETF flows, and four hand-posted X posts this week broke the rule. The register would have refused them on the Desk.</p>
+        <div class="opt"><b class="k">A</b><span>Keep the rule absolute. News is told in %, EH/s, MW, GW and multiples ("Part of its bid only pays out if the sites host AI"). Cashtags for listed miners ($MARA) are allowed, since they aren't money. The register already lets them through.</span></div>
+        <div class="opt"><b class="k">B</b><span>A newsroom exception: third-party figures (deal sizes, ETF flows), credited, in post text only. Never in an image, and never about our rates or anyone's earnings.</span></div>
+        <div class="rec">Recommended: <b>A</b>. It keeps one rule everywhere. The measured winners in mining don't depend on price news, and every example on this page works without a figure.</div>
+      </div>
+      <div class="dec" id="d3"><h3>3 · News that touches our own sites</h3>
+        <p>Ethiopia's rationing, Norway's reservoirs and Paraguay's 2027 contract expiry are live debates. Our customers have machines there.</p>
+        <div class="opt"><b class="k">A</b><span>Cover them, with facts ops has checked about our site. CTRL flags any draft that names one of our countries, and it goes to you before posting.</span></div>
+        <div class="opt"><b class="k">B</b><span>Don't cover stories in our countries. They go to customer communication instead.</span></div>
+        <div class="rec">Recommended: <b>A</b>. Silence on the biggest story in our own region reads badly to the people who already know about it. But it's a customer-relations call, so it's yours.</div>
+      </div>
+      <div class="dec" id="d4"><h3>4 · Replace, not add</h3>
+        <p>X today: 5.7 posts a day, mostly evergreen video. LinkedIn today: a short video every day.</p>
+        <div class="opt"><b class="k">A</b><span>The newsroom replaces them. X has 3 slots plus 1 optional, and video goes in the optional slot (max 1 a day). LinkedIn has 4 Page posts plus the newsletter. The 07:00 data card goes weekly.</span></div>
+        <div class="opt"><b class="k">B</b><span>The newsroom runs on top of what we post today.</span></div>
+        <div class="rec">Recommended: <b>A</b>. X discounts several posts in a row from one account, and LinkedIn reach per post falls with daily posting. It cuts what we post on X today by about half and turns the daily data card (approved 29 Sep) into a weekly one, which is why it's a decision. On LinkedIn it simply puts the 29 Sep plan into practice.</div>
+      </div>
+      <div class="dec" id="d5"><h3>5 · Who posts on LinkedIn as themselves</h3>
+        <p>The 2 a day from people needs 3–4 named people, each posting about 3 times a week with the vessel's draft as a starting point.</p>
+        <div class="opt"><b class="k">A</b><span>You name them (for example you, the founder, Lukáš and one technician), and CTRL gives each a queue.</span></div>
+        <div class="opt"><b class="k">B</b><span>Start with the Page only, and add people after week 4.</span></div>
+        <div class="rec">Recommended: <b>A</b>. The measured reach lives on people's profiles. Send me the names.</div>
+      </div>
+      <div class="dec" id="d6"><h3>6 · A public fleet report</h3>
+        <p>Compass posts uptime across all sites every Monday. It's a strong trust signal for a host, but it needs a real number from ops every week, including the bad weeks.</p>
+        <div class="opt"><b class="k">A</b><span>Weekly uptime % per site, on X Monday and in the LinkedIn document monthly</span></div>
+        <div class="opt"><b class="k">B</b><span>Monthly only, as the LinkedIn document</span></div>
+        <div class="opt"><b class="k">C</b><span>Not yet</span></div>
+        <div class="rec">Recommended: <b>B</b> to start, then <b>A</b> once ops can give the number reliably. Who provides it?</div>
+      </div>
+      <div class="dec" id="d7"><h3>7 · Which events we attend</h3>
+        <p>Everything else is covered remotely from the stream and the news.</p>
+        <div class="opt"><b class="k">A</b><span>Bitcoin Amsterdam (5–6 Nov) and Mining Disrupt (Mar 2027) in person, plus BTC Prague at home</span></div>
+        <div class="opt"><b class="k">B</b><span>Add the Texas summit (18–19 Nov, with the Houston team) and Dubai (30 Nov)</span></div>
+        <div class="opt"><b class="k">C</b><span>Remote only until BTC Prague</span></div>
+        <div class="rec">Recommended: <b>A</b>. The nearest big room this autumn, plus the biggest mining expo of the year.</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:18px">After your answers: CTRL steps 1, 4 and 8 on day 1, the Wire tab and templates by day 4, and the first Mining Brief on Friday 9 Oct. The fixes in <a href="#fix">Fix this week</a> can be done today, without waiting.</div>
+  </section>
+
+  <!-- ===================== SOURCES ===================== -->
+  <details>
+    <summary>Sources (platform claims, dated)</summary>
+    <ol>
+      <li>X algorithm repo, open-sourced 20 Jan 2026, synced to 1 Oct 2026: <a href="https://github.com/xai-org/x-algorithm">github.com/xai-org/x-algorithm</a> · <a href="https://x.com/XEng/status/2013471689087086804">@XEng</a></li>
+      <li>Signal weights, Social Media Today on Business Insider's read of the code, 17 Aug 2026: <a href="https://www.socialmediatoday.com/news/x-algorithm-insights-highlight-key-posting-strategies/828094/">socialmediatoday.com</a></li>
+      <li>Following feed ranked by Grok, Musk, 27 Nov 2025: <a href="https://x.com/elonmusk/status/1993921748597920232">x.com/elonmusk</a> · mutuals boost, 14 Jul 2026: <a href="https://easternherald.com/2026/07/14/x-algorithm-mutual-followers-replies-threads/">easternherald.com</a></li>
+      <li>Link penalty dropped, 28–29 Jul 2026: <a href="https://ppc.land/x-drops-year-old-link-penalty-musk-tells-zuckerberg-on-platform/">ppc.land</a> · Buffer engagement by format, 5 Mar 2026: <a href="https://buffer.com/resources/state-of-social-media-engagement-2026/">buffer.com</a></li>
+      <li>Articles for all Premium, 12 Jan 2026: <a href="https://x.com/premium/status/2010843650146631888">@premium</a></li>
+      <li>Originality and "BREAKING" warning, 11 Apr 2026: <a href="https://x.com/nikitabier/status/2043045929750794399">@nikitabier</a> · duplicate detection, 16 Jul 2026: <a href="https://x.com/nikitabier/status/2077774853650944028">@nikitabier</a></li>
+      <li>Vertical video player, 18 Feb 2026: <a href="https://techcrunch.com/2026/02/18/x-continues-to-bet-on-vertical-video-with-its-latest-update/">TechCrunch</a> · Live Studio, 1 Jul 2026: <a href="https://www.socialmediatoday.com/news/x-launches-livestream-studio-to-simplify-live-broadcasts/824300/">socialmediatoday.com</a></li>
+      <li>Communities shut down, 23 Apr 2026: <a href="https://techcrunch.com/2026/04/23/x-is-shutting-down-communities-because-of-low-usage-and-lots-of-spam/">TechCrunch</a> · Under the Hood, 21 Sep 2026: <a href="https://techcrunch.com/2026/09/21/x-will-now-tell-users-when-governments-have-forced-it-to-limit-their-posts/">TechCrunch</a></li>
+      <li>LinkedIn feed engineering, 12 Mar 2026: <a href="https://www.linkedin.com/blog/engineering/feed/engineering-the-next-generation-of-linkedins-feed">linkedin.com/blog/engineering</a></li>
+      <li>LinkedIn limits AI-generated content, 21 May 2026: <a href="https://www.socialmediatoday.com/news/linkedin-wants-to-limit-the-reach-of-ai-generated-content/820935/">socialmediatoday.com</a></li>
+      <li>LinkedIn's own cadence and video advice, 25 May 2026: <a href="https://www.socialmediatoday.com/news/linkedin-shares-video-creation-tips-based-on-platform-trends/821050/">socialmediatoday.com</a></li>
+      <li>Van der Blom 2026 report via Goodman (cadence, interest graph, links, hashtags), 7 May 2026: <a href="https://melaniegoodmanlinkedinconsultant.substack.com/p/linkedin-algorithm-2026-reach-topic-authority">substack</a></li>
+      <li>Format benchmarks: Socialinsider, 16 Mar 2026: <a href="https://www.socialinsider.io/social-media-benchmarks/linkedin">socialinsider.io</a> · AuthoredUp, 2 Sep 2026: <a href="https://authoredup.com/blog/best-performing-content-on-linkedin">authoredup.com</a></li>
+      <li>Newsletters: LinkedIn Help <a href="https://www.linkedin.com/help/linkedin/answer/a517914">a517914</a>, <a href="https://www.linkedin.com/help/linkedin/answer/a596833">a596833</a>, <a href="https://www.linkedin.com/help/linkedin/answer/a591266">a591266</a> · email delivery measured, 27 Aug 2026: <a href="https://melaniegoodmanlinkedinconsultant.substack.com/p/linkedin-newsletter-seo-settings">substack</a></li>
+      <li>Live tied to Events from 22 Jun 2026: <a href="https://ppc.land/linkedin-kills-spontaneous-live-streaming-from-june-22/">ppc.land</a> · collaborative posts, 23 Jul 2026: <a href="https://ppc.land/linkedin-caps-collaborative-posts-at-five-and-blocks-page-engagement-metrics/">ppc.land</a></li>
+      <li>Industry context: CoinShares Q2 mining report, 15 Sep 2026: <a href="https://coinshares.com/corp/insights/research-data/bitcoin-mining-report-q2-2026/">coinshares.com</a> · Hashrate Index roundup, 28 Sep 2026: <a href="https://hashrateindex.com/blog/hashrate-index-roundup-september-28-2026/">hashrateindex.com</a> · Ethiopia, 15 Sep 2026: <a href="https://www.tftc.io/ethiopia-bitcoin-mining-power-cut-drought-2026">tftc.io</a> · Poolin, 23 and 30 Sep 2026: <a href="https://www.theblock.co/news/business/2026-09-23-hut-8-wins-bidding-poolin-texas-data-centers-140-million-offer-416190">theblock.co</a>, <a href="https://www.theenergymag.com/news/2026-09-30/poolin-hut8-bid-reopen">theenergymag.com</a></li>
+      <li>Account measurements, 1 Oct 2026: public pages and the public FxTwitter API, no logins. Raw data in <code>~/oneminers-ctrl/docs/research/newsroom-2026-10-01/</code></li>
+    </ol>
+  </details>
+</div>
+</body>
+</html>
